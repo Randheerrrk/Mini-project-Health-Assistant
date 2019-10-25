@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'dart:async';
+import 'send_bar.dart';
 
 void main() => runApp(MyApp());
 
@@ -132,12 +133,10 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            Text(
-              'Hi There',
-              style: Theme.of(context).textTheme.display1,
-            ),
+
+            SendBar()
           ],
         ),
 
