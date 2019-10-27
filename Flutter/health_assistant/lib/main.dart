@@ -1,148 +1,133 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'dart:async';
+import 'colors.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // Root
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Health Assisitant',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-      ),
-      home: HomePage(title: 'Home'),
-    );
-  }
+	// Root
+	@override
+	Widget build(BuildContext context) {
+		return MaterialApp(
+			debugShowCheckedModeBanner: false,
+			title: 'PrimeAide',
+			theme: ThemeData(
+				primarySwatch: primaryColor,
+			),
+			home: HomePage(title: 'Home'),
+		);
+	}
 }
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title}) : super(key: key);
-  final String title;
-  @override
-  _HomePageState createState() => _HomePageState();
+	HomePage({Key key, this.title}) : super(key: key);
+	final String title;
+	@override
+	_HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<bool> onBackPress() {
-    openDialog();
-    print("Back Pressed");
-    return Future.value(false);
-  }
+	bool _isMicEnabled = true;
 
+	final _myController = TextEditingController();
 
-  Future<Null> openDialog() async {
-    switch (await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            contentPadding: EdgeInsets.only(
-                left: 0.0, right: 0.0, top: 0.0, bottom: 0.0),
-            children: <Widget>[
-              Container(
-                color: Colors.red,
-                margin: EdgeInsets.all(0.0),
-                padding: EdgeInsets.only(bottom: 10.0, top: 10.0),
-                height: 100.0,
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      child: Icon(
-                        Icons.exit_to_app,
-                        size: 30.0,
-                        color: Colors.white,
-                      ),
-                      margin: EdgeInsets.only(bottom: 10.0),
-                    ),
-                    Text(
-                      'Exit app',
-                      style: TextStyle(color: Colors.white,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Are you sure to exit app?',
-                      style: TextStyle(color: Colors.white70, fontSize: 14.0),
-                    ),
-                  ],
-                ),
-              ),
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.pop(context, 0);
-                },
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      child: Icon(
-                        Icons.cancel,
-                        color: Colors.amber,
-                      ),
-                      margin: EdgeInsets.only(right: 10.0),
-                    ),
-                    Text(
-                      'CANCEL',
-                      style: TextStyle(
-                          color: Colors.amber, fontWeight: FontWeight.bold),
-                    )
-                  ],
-                ),
-              ),
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.pop(context, 1);
-                },
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      child: Icon(
-                        Icons.check_circle,
-                        color: Colors.amber,
-                      ),
-                      margin: EdgeInsets.only(right: 10.0),
-                    ),
-                    Text(
-                      'YES',
-                      style: TextStyle(
-                          color: Colors.amber, fontWeight: FontWeight.bold),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          );
-        })) {
-      case 0:
-        break;
-      case 1:
-        exit(0);
-        break;
+	@override
+	void dispose() {
+		// Clean up the controller when the widget is disposed.
+		_myController.dispose();
+		super.dispose();
+	}
+
+	@override
+	Widget build(BuildContext context) {
+		return Scaffold(
+			appBar: AppBar(
+				title: Text(widget.title),
+			),
+			body: Center(
+				child: Column(
+					mainAxisAlignment: MainAxisAlignment.end,
+					children: <Widget>[textBoxWidget()],
+				),
+			),
+		);
+	}
+
+  void micController(){
+    if(_isMicEnabled){
+      log("Mic is enabled!");
+      
+
+    }else{
+      String temp = _myController.text;
+      if(temp!=null||temp!="")
+        callDoctor(temp);
+        else
+          log("Unable to fetch string");
     }
   }
 
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Hi There',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
-
-      ),
-
-    );
+  void callDoctor(String val){
+    log("Sending" + val + " to DOctor");
+    // TODO: Implement this.
   }
+	Widget textBoxWidget() {
+		return Container(
+				padding: EdgeInsets.all(8.0),
+				child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+					Expanded(
+						child: TextFormField(
+							decoration: InputDecoration(
+								labelText: "Enter your problem here.",
+								fillColor: Colors.white,
+								border: OutlineInputBorder(
+									borderRadius: BorderRadius.circular(25.0),
+									borderSide: BorderSide(),
+								),
+							),
+							validator: (val) {
+								if (val.length == 0) {
+									return "Text cannot be empty";
+								} else {
+									return null;
+								}
+							},
+							controller: _myController,
+							onChanged: (val) {
+								if (val == null || val == "")
+									setState(() {
+										_isMicEnabled = true;
+									});
+								else
+									setState(() {
+										_isMicEnabled = false;
+									});
+							},
+							keyboardType: TextInputType.text,
+							style: TextStyle(
+								fontFamily: "Poppins",
+							),
+						),
+					),
+					Container(
+						padding: EdgeInsets.only(left: 8.0),
+						child: SizedBox.fromSize(
+							size: Size(56, 56), // button width and height
+							child: ClipOval(
+								child: Material(
+									color: primaryColor, // button color
+									child: InkWell(
+											splashColor: whiteColor, // splash color
+											onTap: micController(), // button pressed
+											child: Icon(
+												_isMicEnabled ? Icons.mic : Icons.send,
+												color: whiteColor,
+											)),
+								),
+							),
+						),
+					),
+				]));
+	}
 }
