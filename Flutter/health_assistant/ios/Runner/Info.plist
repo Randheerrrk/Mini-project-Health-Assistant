@@ -11,6 +11,10 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
+	<key>NSMicrophoneUsageDescription</key>
+    <string>This application needs to access your microphone</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>This application needs the speech recognition permission</string>
 	<string>health_assistant</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
