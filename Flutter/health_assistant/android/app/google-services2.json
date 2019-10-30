@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "496606531189",
+    "firebase_url": "https://primeaide-69b10.firebaseio.com",
+    "project_id": "primeaide-69b10",
+    "storage_bucket": "primeaide-69b10.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:496606531189:android:15ad93b53b9aa8345ff23c",
+        "android_client_info": {
+          "package_name": "com.example.health_assistant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "496606531189-uf5j5roqcg7f0a9b64573ekrmem2f460.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBABlu3f45hcVXjCTK4c_R1YkFufvFKTPU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "496606531189-uf5j5roqcg7f0a9b64573ekrmem2f460.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

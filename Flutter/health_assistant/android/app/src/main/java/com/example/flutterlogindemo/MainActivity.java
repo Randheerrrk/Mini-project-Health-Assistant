@@ -1,4 +1,4 @@
-package com.example.health_assistant;
+package com.example.flutterlogindemo;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
