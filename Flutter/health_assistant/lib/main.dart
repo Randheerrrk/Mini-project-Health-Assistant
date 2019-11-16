@@ -1,4 +1,4 @@
-import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_login_demo/services/authentication.dart';
 import 'package:flutter_login_demo/pages/root_page.dart';

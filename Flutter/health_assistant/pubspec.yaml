@@ -4,13 +4,14 @@ description: A new Flutter project.
 dependencies:
   flutter:
     sdk: flutter
-  speech_recognition: "^0.3.0"
+  speech_recognition: ^0.3.0+1
 
   cupertino_icons: ^0.1.2
   firebase_auth: ^0.14.0+5
   firebase_database: ^3.0.7
   firebase_web: ^5.0.9
   firebase: ^5.0.0
+  # simple_permissions: ^0.1.9
 
 dev_dependencies:
   flutter_test:
