@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login_demo/config.dart';
 import 'package:flutter_login_demo/services/authentication.dart';
-import 'dart:developer';
+import 'package:speech_recognition/speech_recognition.dart';
+import 'dart:developer' as developer;
+import 'user_message.dart';
+import 'message.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.auth, this.userId, this.logoutCallback})
@@ -19,22 +22,29 @@ class _HomePageState extends State<HomePage> {
 
  // final FirebaseDatabase _database = FirebaseDatabase.instance;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  bool _isMicEnabled = true;
+  final TextEditingController textEditingController = new TextEditingController();
+  bool _enableMic = true;
+  final String file = "lib.send_bar.";
 
-  final _myController = TextEditingController();
+  SpeechRecognition _speechRecognition;
+  String resultText ="";
+  bool _isAvailable = false;
+  bool _isListening =false;
 
+  List<UserMessage> list = new List<UserMessage>(); 
+  ScrollController listScrollController = new ScrollController();
+  
   @override
   void initState() {
     super.initState();
 
+  initialseSTT();
   }
-
 
   @override
   void dispose() {
     super.dispose();
   }
-
 
   signOut() async {
     try {
@@ -44,8 +54,6 @@ class _HomePageState extends State<HomePage> {
       print(e);
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -62,33 +70,32 @@ class _HomePageState extends State<HomePage> {
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[textBoxWidget()],
+            children: <Widget>[
+              Expanded(
+                child:ListView.builder(
+                padding: EdgeInsets.all(10.0),
+                itemBuilder: (context, index) => Message2(list[index]),
+                itemCount:list.length,
+                reverse: false,
+                shrinkWrap: true,
+                controller: listScrollController,
+              ),
+                ),
+              
+              Expanded(
+                flex: 0,
+                child: Container(
+                  height: 5,
+                  child: _isListening?LinearProgressIndicator():Container(width: 0,height: 0,)),
+              ),
+              textBoxWidget()],
           ),
         ),
 
     );
   }
 
-
-  void micController(){
-    if(_isMicEnabled){
-      log("Mic is enabled!");
-
-
-    }else{
-      String temp = _myController.text;
-      if(temp!=null||temp!="")
-        callDoctor(temp);
-      else
-        log("Unable to fetch string");
-    }
-  }
-
-  void callDoctor(String val){
-    log("Sending" + val + " to DOctor");
-    // TODO: Implement this.
-  }
-
+///The text box that is shown at the bottom
   Widget textBoxWidget() {
     return Container(
         padding: EdgeInsets.all(8.0),
@@ -101,6 +108,7 @@ class _HomePageState extends State<HomePage> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25.0),
                   borderSide: BorderSide(),
+                  
                 ),
               ),
               validator: (val) {
@@ -110,15 +118,15 @@ class _HomePageState extends State<HomePage> {
                   return null;
                 }
               },
-              controller: _myController,
+              controller: textEditingController,
               onChanged: (val) {
                 if (val == null || val == "")
                   setState(() {
-                    _isMicEnabled = true;
+                    _enableMic = true;
                   });
                 else
                   setState(() {
-                    _isMicEnabled = false;
+                    _enableMic = false;
                   });
               },
               keyboardType: TextInputType.text,
@@ -127,24 +135,82 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          Container(
-            padding: EdgeInsets.only(left: 8.0),
-            child: SizedBox.fromSize(
-              size: Size(56, 56), // button width and height
-              child: ClipOval(
-                child: Material(
-                  color: primaryColor, // button color
-                  child: InkWell(
-                      splashColor: whiteColor, // splash color
-                      onTap:(){micController();}, // button pressed
-                      child: Icon(
-                        _isMicEnabled ? Icons.mic : Icons.send,
-                        color: whiteColor,
-                      )),
-                ),
-              ),
-            ),
+          FloatingActionButton(
+            child:_enableMic ? (_isListening? new Icon(Icons.stop):new Icon(Icons.mic) ): new Icon(Icons.send),
+             onPressed:()=> _callParser(),
           ),
         ]));
   }
+
+// Enables the mic and start and stop the voice to text plugin
+  _callParser() {
+    //There is text in text box send it to main
+    if (textEditingController.text != "") {
+      developer.log('Input has text: ' + textEditingController.text,
+          name: file + " _callParser");
+      sendKaBab(textEditingController.text);
+    } else {
+      if (_isAvailable && !_isListening && _enableMic) {
+        _speechRecognition
+            .listen(locale: "en_US")
+            .then((result) => textEditingController.text =result);
+        developer.log("Calling STT service!", name: file + "_callParser");
+      }
+     else if(_isListening && _enableMic && _isAvailable){
+          _speechRecognition.stop().then(
+                (result) => setState(()
+                {_isListening = false;
+                _enableMic = false;
+                developer.log("Stopped Listening");
+                }),
+          );
+    }
+    }
+  }
+
+///THis method is used to intialise the voice reconginition engine.
+  void initialseSTT(){
+  developer.log("Initialsing Voice!");
+    
+    _speechRecognition = SpeechRecognition();
+
+    _speechRecognition.setAvailabilityHandler(
+          (bool result) => setState(() => _isAvailable = result),
+    );
+
+    _speechRecognition.setRecognitionStartedHandler(
+          () => setState(() => _isListening = true),
+    );
+
+    _speechRecognition.setRecognitionResultHandler(
+          (String speech) => setState((){ 
+            textEditingController.text = speech;
+            // resultText = speech;
+            _enableMic =false;
+            }),
+    );
+
+    _speechRecognition.setRecognitionCompleteHandler(
+          () => setState(() => _isListening = false),
+    );
+
+    _speechRecognition.activate().then(
+          (result) => setState(() => _isAvailable = result),
+    );
+    print("Comlete");
+}
+
+  //Implement this function in main.dart
+  sendKaBab(String text) {
+    print(text);
+    setState(() {
+      textEditingController.text = "";
+      _enableMic = true;
+       list.add(UserMessage(text,UserType.User));
+    });
+    //TODO: implement
+   
+    listScrollController.animateTo(listScrollController.position.maxScrollExtent + 40, duration: Duration(milliseconds: 200), curve: Curves.easeOut);
+  }
+
 }
