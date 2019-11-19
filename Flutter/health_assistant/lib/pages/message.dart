@@ -32,6 +32,9 @@ class Message2 extends StatelessWidget{
                         alignment: Alignment.topLeft,
                         child:   Container(
                           color: bertMessagebg,
+                          decoration: BoxDecoration(
+                                border: Border.all(color: Colors.blueAccent)
+                              ),
                           child:  Text(message.text),,
                         ),
                       ),
@@ -60,13 +63,15 @@ class Message2 extends StatelessWidget{
                         new Align(
                           alignment: Alignment.bottomRight,
                           child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.blueAccent)
+                              ),
                             color: userMessagebg,
                             child: Text(message.text),
                           ) 
                         ),
                 ],
                     ),
-                    // ),
                   ),
                   
                 ],
