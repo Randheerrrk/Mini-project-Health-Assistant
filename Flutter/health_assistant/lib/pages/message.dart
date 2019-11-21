@@ -1,18 +1,48 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_login_demo/config.dart';
+import 'package:flutter_login_demo/services/api.dart';
 import 'user_message.dart';
 
-class Message2 extends StatelessWidget{
+class MessageHandler extends StatefulWidget{
+    UserMessage val;
+    MessageHandler(final UserMessage message){
+      this.val =message;
+    }
+
+    @override
+    State<StatefulWidget> createState() => new _Message2(val);
+}
+
+class _Message2 extends State<MessageHandler>{
 
  UserMessage message;
+ String reply;
 
-  Message2(UserMessage message){
+  _Message2(UserMessage message){
     this.message =message;
   }
 
-  Widget getText() {
-      if(message.user==UserType.Bert){
-        return new Container(
+  @override
+  initState(){
+    super.initState();
+    reply = "Loading";
+  }
+
+    void call() async{
+      String temp =  await ApiService.getConsulted(message.text);
+      log("Called async: result:" +temp);
+      setState(() {
+        reply  =temp;
+      });
+    }
+
+  @override
+  Widget build(BuildContext context) {
+     if(message.user==UserType.Bert){
+        call();
+         return new Container(
             child: new Row(
               children: <Widget>[
                 new Column(
@@ -31,11 +61,12 @@ class Message2 extends StatelessWidget{
                       new Align(
                         alignment: Alignment.topLeft,
                         child:   Container(
-                          color: bertMessagebg,
+                          
                           decoration: BoxDecoration(
-                                border: Border.all(color: Colors.blueAccent)
+                                border: Border.all(color: Colors.blueAccent),
+                                color: bertMessagebg,
                               ),
-                          child:  Text(message.text),,
+                          child:  Text(reply),
                         ),
                       ),
               ],
@@ -46,10 +77,10 @@ class Message2 extends StatelessWidget{
               ],
             ),
           );
-      }
+     }
       else if (message.user == UserType.User)
         {
-        return new Container(
+           return new Container(
               child: new Row(
                 children: <Widget>[
                   
@@ -64,9 +95,9 @@ class Message2 extends StatelessWidget{
                           alignment: Alignment.bottomRight,
                           child: Container(
                             decoration: BoxDecoration(
-                                border: Border.all(color: Colors.blueAccent)
+                                border: Border.all(color: Colors.blueAccent),
+                                color:userMessagebg,
                               ),
-                            color: userMessagebg,
                             child: Text(message.text),
                           ) 
                         ),
@@ -77,16 +108,10 @@ class Message2 extends StatelessWidget{
                 ],
               ),
             );  
-          }
-        else
-          return Container(
+        }
+        else return Container(
             width: 0,
             height: 0,
           );
-    }
-
-  @override
-  Widget build(BuildContext context) {
-    return getText();
   }
 }

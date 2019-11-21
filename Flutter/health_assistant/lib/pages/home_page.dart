@@ -5,6 +5,7 @@ import 'package:speech_recognition/speech_recognition.dart';
 import 'dart:developer' as developer;
 import 'user_message.dart';
 import 'message.dart';
+import 'dart:io';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.auth, this.userId, this.logoutCallback})
@@ -20,10 +21,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
- // final FirebaseDatabase _database = FirebaseDatabase.instance;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController textEditingController = new TextEditingController();
   bool _enableMic = true;
+  bool isConnected = false;
   final String file = "lib.send_bar.";
 
   SpeechRecognition _speechRecognition;
@@ -74,7 +75,7 @@ class _HomePageState extends State<HomePage> {
               Expanded(
                 child:ListView.builder(
                 padding: EdgeInsets.all(10.0),
-                itemBuilder: (context, index) => Message2(list[index]),
+                itemBuilder: (context, index) => MessageHandler(list[index]),
                 itemCount:list.length,
                 reverse: false,
                 shrinkWrap: true,
@@ -202,15 +203,38 @@ class _HomePageState extends State<HomePage> {
 
   //Implement this function in main.dart
   sendKaBab(String text) {
+    if(isConnected){
     print(text);
     setState(() {
       textEditingController.text = "";
       _enableMic = true;
        list.add(UserMessage(text,UserType.User));
+       list.add(UserMessage(text,UserType.Bert));
     });
-    //TODO: implement
-   
     listScrollController.animateTo(listScrollController.position.maxScrollExtent + 40, duration: Duration(milliseconds: 200), curve: Curves.easeOut);
+  
+    }else{
+      Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text("No connectio"),
+    ));
+    }
+  }
+
+  checkConnection() async{
+    try {
+        final connected = await InternetAddress.lookup(URLS.BASE_URL);
+        if (connected.isNotEmpty && connected[0].rawAddress.isNotEmpty) {
+          setState(() {
+            isConnected = true;
+          });
+         print('connected');
+  }
+    } on SocketException catch (_) {
+        print('not connected');
+        setState(() {
+          isConnected = false;
+        });
+    }
   }
 
 }
