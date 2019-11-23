@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'dart:developer';     
+import 'dart:developer';
+import 'dart:io';     
 import 'package:http/http.dart' as http; 
 import 'package:flutter_login_demo/config.dart';
 
@@ -13,13 +14,13 @@ class ApiService {
      Map<String,String> temp = {
        "args":info
      };
-      String query = '${URLS.BASE_URL}/doc?args=' + Uri.encodeQueryComponent(info);
-      log(query);
-     final response = await http.post('${URLS.BASE_URL}/doc?' + Uri.encodeQueryComponent(json.encode(temp)));  
+     final response = await http.get('${URLS.BASE_URL}/doc?args=' + Uri.encodeQueryComponent(json.encode(info)));  
    if (response.statusCode == 200) {  
-     return json.decode(response.body);  
+     return response.body;  
    } else {  
+     log("Result:" + response.body);
      return "Network Error";  
+     
    }  
   }
    

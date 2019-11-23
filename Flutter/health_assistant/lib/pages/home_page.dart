@@ -203,7 +203,7 @@ class _HomePageState extends State<HomePage> {
 
   //Implement this function in main.dart
   sendKaBab(String text) {
-    if(isConnected){
+    
     print(text);
     setState(() {
       textEditingController.text = "";
@@ -213,11 +213,6 @@ class _HomePageState extends State<HomePage> {
     });
     listScrollController.animateTo(listScrollController.position.maxScrollExtent + 40, duration: Duration(milliseconds: 200), curve: Curves.easeOut);
   
-    }else{
-      Scaffold.of(context).showSnackBar(SnackBar(
-      content: Text("No connectio"),
-    ));
-    }
   }
 
   checkConnection() async{

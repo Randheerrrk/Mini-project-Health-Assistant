@@ -10,5 +10,5 @@ const Color bertMessagebg = Colors.amber;
 const String appName = "Prime Aide";
 
 class URLS {  
- static const String BASE_URL = 'http://19.0.0.5:5050';  
+ static const String BASE_URL = 'http://ada0526b.ngrok.io';  
 } 

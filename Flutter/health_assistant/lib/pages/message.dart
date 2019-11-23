@@ -28,20 +28,22 @@ class _Message2 extends State<MessageHandler>{
   initState(){
     super.initState();
     reply = "Loading";
+    if(message.user==UserType.Bert)
+      call();
   }
 
     void call() async{
       String temp =  await ApiService.getConsulted(message.text);
       log("Called async: result:" +temp);
       setState(() {
-        reply  =temp;
+        reply=temp;
       });
+      return;
     }
 
   @override
   Widget build(BuildContext context) {
      if(message.user==UserType.Bert){
-        call();
          return new Container(
             child: new Row(
               children: <Widget>[
