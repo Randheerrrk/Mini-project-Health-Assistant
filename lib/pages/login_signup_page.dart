@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_login_demo/config.dart';
-import 'package:flutter_login_demo/services/authentication.dart';
+import 'package:primeaide/config.dart';
+import 'package:primeaide/services/authentication.dart';
 
 class LoginSignupPage extends StatefulWidget {
   LoginSignupPage({this.auth, this.loginCallback});

@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_login_demo/services/authentication.dart';
-import 'package:flutter_login_demo/pages/root_page.dart';
-import 'package:flutter_login_demo/config.dart';
+import 'package:primeaide/services/authentication.dart';
+import 'package:primeaide/pages/root_page.dart';
+import 'package:primeaide/config.dart';
 
 void main() {
   runApp(new MyApp());

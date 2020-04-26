@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';     
 import 'package:http/http.dart' as http; 
-import 'package:flutter_login_demo/config.dart';
+import 'package:primeaide/config.dart';
 
 
 

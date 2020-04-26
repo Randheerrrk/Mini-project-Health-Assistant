@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_login_demo/config.dart';
-import 'package:flutter_login_demo/services/api.dart';
+import 'package:primeaide/config.dart';
+import 'package:primeaide/services/api.dart';
 import 'user_message.dart';
 
 class MessageHandler extends StatefulWidget{
